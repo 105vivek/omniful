@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Search app</h1>
+    <input type="text" id="searchInput" placeholder="search.." onkeyup="debounceSearch()">
+    <div id="searchResults"></div>
+</body>
+</html>
+<script>
+    let debounceTimeout;
+    function debounceSearch(){
+        clearTimeout(debounceTimeout);
+        debounceTimeout=setTimeout(()=>{
+            const querry=document.getElementById("searchInput").value;
+            if(querry){
+                fetchResults(querry);
+            }
+            else{
+                document.getElementById('searchInput').innerHTML="";
+            }
+        },500);
+    }
+    function fetchApiCall(querry){
+        return new Promise((resolve,reject)=>{
+            setTimeout(()=>{
+                const fakeResults=[{
+                    id:1,name: `Result for ${querry}-1`
+                },
+                {
+                    id:2,name: `Result for ${querry}-2`
+                },
+                {
+                    id:3,name: `Result for ${querry}-3`
+                },];
+                resolve(fakeResults);
+            },1000);
+        })
+    }
+    function fetchResults(querry){
+        fetchApiCall(querry).then(results=>{
+            displayResults(results);
+        }).catch(error=>{console.log('Error fetching Results:',error)});
+
+    }
+    function displayResults(results){
+        const resultsContainer=document.getElementById("searchResults");
+        resultsContainer.innerHTML="";
+        results.forEach(result => {
+            const resultDiv=document.createElement('div');
+            resultDiv.classList.add('result-item');
+            resultDiv.textContent=result.name;
+            resultsContainer.appendChild(resultDiv);
+            
+        });
+    }
+</script>
